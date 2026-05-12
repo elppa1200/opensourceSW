@@ -109,3 +109,28 @@ def validate(model, loader, criterion):
     acc = 100 * correct / total
     avg_loss = total_loss / len(loader)
     return avg_loss, acc
+
+# 메인 학습 루프
+if __name__ == "__main__":
+    print(f"\n학습 시작! (총 {EPOCHS} 에폭)")
+    print("-" * 50)
+
+    best_val_acc = 0
+
+    for epoch in range(EPOCHS):
+        train_loss, train_acc = train_one_epoch(model, train_loader, criterion, optimizer)
+        val_loss, val_acc = validate(model, val_loader, criterion)
+
+        print(f"에폭 [{epoch+1}/{EPOCHS}]")
+        print(f"  Train Loss: {train_loss:.4f} | Train Acc: {train_acc:.2f}%")
+        print(f"  Val Loss:   {val_loss:.4f} | Val Acc:   {val_acc:.2f}%")
+        print("-" * 50)
+
+        # 최고 성능 모델 저장
+        if val_acc > best_val_acc:
+            best_val_acc = val_acc
+            os.makedirs(os.path.dirname(MODEL_SAVE_PATH), exist_ok=True)
+            torch.save(model.state_dict(), MODEL_SAVE_PATH)
+            print(f"  모델 저장 완료! (Val Acc: {val_acc:.2f}%)")
+
+    print(f"\n학습 완료! 최고 Val Acc: {best_val_acc:.2f}%")
