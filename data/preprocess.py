@@ -68,6 +68,49 @@ def build_dataset():
     for cat, imgs in class_images.items():
         print(f"  {cat}: {len(imgs)}장")
 
+# Validaiton 처리 함수 추가
+def build_validation():
+    class_images = defaultdict(list)
+
+    print("Validation 라벨 파일 읽는 중...")
+    for json_file in os.listdir(VAL_LABEL_DIR):
+        if not json_file.endswith(".json"):
+            continue
+
+        json_path = os.path.join(VAL_LABEL_DIR, json_file)
+        with open(json_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        image_name = data.get("Image", "")
+        objects = data.get("objects", [])
+
+        if not objects:
+            continue
+
+        class_name = objects[0].get("class_name", "")
+        category = LABEL_MAP.get(class_name)
+        if category is None:
+            continue
+
+        image_path = os.path.join(VAL_IMG_DIR, image_name)
+        if os.path.exists(image_path):
+            class_images[category].append(image_path)
+
+    print("\nValidation 카테고리별 이미지 수:")
+    for cat, imgs in class_images.items():
+        print(f"  {cat}: {len(imgs)}장")
+
+    print("\nValidation 이미지 복사 중...")
+    for category, images in class_images.items():
+        out_dir = os.path.join(OUTPUT_DIR, "val", category)
+        os.makedirs(out_dir, exist_ok=True)
+
+        for img_path in images:
+            shutil.copy(img_path, out_dir)
+
+        print(f"  {category}: {len(images)}장 복사 완료")
+
+    print("\nValidation 전처리 완료!")
 
 # 클래스별 10,000장 샘플링 후 복사
     print(f"\n클래스별 {SAMPLES_PER_CLASS}장 샘플링 및 복사 중...")
