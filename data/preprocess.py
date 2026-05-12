@@ -129,3 +129,4 @@ def build_validation():
 
 if __name__ == "__main__":
     build_dataset()
+    build_validation()
