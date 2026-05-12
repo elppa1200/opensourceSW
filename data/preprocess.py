@@ -27,3 +27,39 @@ LABEL_MAP = {
     "c_6": "plastic", "c_6_01": "plastic",
     "c_7": "plastic", "c_7_01": "plastic",
 }
+
+def build_dataset():
+    # 카테고리별 이미지 목록 수집
+    class_images = defaultdict(list)
+
+    print("라벨 파일 읽는 중...")
+    for json_file in os.listdir(TRAIN_LABEL_DIR):
+        if not json_file.endswith(".json"):
+            continue
+
+        json_path = os.path.join(TRAIN_LABEL_DIR, json_file)
+        with open(json_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        image_name = data.get("Image", "")
+        objects = data.get("objects", [])
+
+        if not objects:
+            continue
+
+        # 첫 번째 object의 class_name 사용
+        class_name = objects[0].get("class_name", "")
+
+        # 4개 카테고리로 매핑
+        category = LABEL_MAP.get(class_name)
+        if category is None:
+            continue
+
+        image_path = os.path.join(TRAIN_IMG_DIR, image_name)
+        if os.path.exists(image_path):
+            class_images[category].append(image_path)
+
+    # 카테고리별 현황 출력
+    print("\n카테고리별 이미지 수:")
+    for cat, imgs in class_images.items():
+        print(f"  {cat}: {len(imgs)}장")
