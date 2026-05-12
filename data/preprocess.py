@@ -63,3 +63,22 @@ def build_dataset():
     print("\n카테고리별 이미지 수:")
     for cat, imgs in class_images.items():
         print(f"  {cat}: {len(imgs)}장")
+
+
+# 클래스별 10,000장 샘플링 후 복사
+    print(f"\n클래스별 {SAMPLES_PER_CLASS}장 샘플링 및 복사 중...")
+    for category, images in class_images.items():
+        out_dir = os.path.join(OUTPUT_DIR, "train", category)
+        os.makedirs(out_dir, exist_ok=True)
+
+        sampled = random.sample(images, min(SAMPLES_PER_CLASS, len(images)))
+        for img_path in sampled:
+            shutil.copy(img_path, out_dir)
+
+        print(f"  {category}: {len(sampled)}장 복사 완료")
+
+    print("\n전처리 완료!")
+    print(f"저장 위치: {OUTPUT_DIR}")
+
+if __name__ == "__main__":
+    build_dataset()
