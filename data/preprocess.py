@@ -9,6 +9,10 @@ TRAIN_IMG_DIR = r"D:\waste_dataset\Training\images_extracted"
 TRAIN_LABEL_DIR = r"D:\waste_dataset\Training\labels_extracted"
 OUTPUT_DIR = r"D:\waste_dataset\processed"
 
+# Validation 경로 추가
+VAL_IMG_DIR = r"D:\waste_dataset\Validation\images_extracted"
+VAL_LABEL_DIR = r"D:\waste_dataset\Validation\labels_extracted"
+
 SAMPLES_PER_CLASS = 10000
 
 # 4개 카테고리 매핑
