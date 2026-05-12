@@ -86,3 +86,26 @@ def train_one_epoch(model, loader, criterion, optimizer):
     acc = 100 * correct / total
     avg_loss = total_loss / len(loader)
     return avg_loss, acc
+
+# 검증 함수
+def validate(model, loader, criterion):
+    model.eval()
+    total_loss = 0
+    correct = 0
+    total = 0
+
+    with torch.no_grad():
+        for images, labels in loader:
+            images, labels = images.to(device), labels.to(device)
+
+            outputs = model(images)
+            loss = criterion(outputs, labels)
+
+            total_loss += loss.item()
+            _, predicted = outputs.max(1)
+            correct += predicted.eq(labels).sum().item()
+            total += labels.size(0)
+
+    acc = 100 * correct / total
+    avg_loss = total_loss / len(loader)
+    return avg_loss, acc
