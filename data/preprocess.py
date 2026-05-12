@@ -32,7 +32,7 @@ LABEL_MAP = {
     "c_7": "plastic", "c_7_01": "plastic",
 }
 
-def build_dataset():
+def build_training(): # build_dataset -> build_training 으로 함수명 변경
     # 카테고리별 이미지 목록 수집
     class_images = defaultdict(list)
 
@@ -128,5 +128,5 @@ def build_validation():
     print(f"저장 위치: {OUTPUT_DIR}")
 
 if __name__ == "__main__":
-    build_dataset()
+    build_training()    # build_dataset -> build_training 으로 함수명 변경
     build_validation()
