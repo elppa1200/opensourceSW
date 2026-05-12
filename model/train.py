@@ -61,3 +61,28 @@ optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 
 print("EfficientNet-B0 모델 로드 완료")
 print(f"출력 클래스 수: {NUM_CLASSES}")
+
+# 학습 함수
+def train_one_epoch(model, loader, criterion, optimizer):
+    model.train()
+    total_loss = 0
+    correct = 0
+    total = 0
+
+    for images, labels in loader:
+        images, labels = images.to(device), labels.to(device)
+
+        optimizer.zero_grad()
+        outputs = model(images)
+        loss = criterion(outputs, labels)
+        loss.backward()
+        optimizer.step()
+
+        total_loss += loss.item()
+        _, predicted = outputs.max(1)
+        correct += predicted.eq(labels).sum().item()
+        total += labels.size(0)
+
+    acc = 100 * correct / total
+    avg_loss = total_loss / len(loader)
+    return avg_loss, acc
