@@ -46,3 +46,18 @@ val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
 print(f"클래스 목록: {train_dataset.classes}")
 print(f"학습 데이터: {len(train_dataset)}장")
 print(f"검증 데이터: {len(val_dataset)}장")
+
+# EfficientNet-B0 모델 불러오기
+model = models.efficientnet_b0(weights="IMAGENET1K_V1")
+
+# 마지막 분류 레이어를 4개 클래스로 교체
+model.classifier[1] = nn.Linear(model.classifier[1].in_features, NUM_CLASSES)
+
+model = model.to(device)
+
+# 손실함수 및 옵티마이저
+criterion = nn.CrossEntropyLoss()
+optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
+
+print("EfficientNet-B0 모델 로드 완료")
+print(f"출력 클래스 수: {NUM_CLASSES}")
