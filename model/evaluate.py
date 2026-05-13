@@ -43,3 +43,40 @@ model = model.to(device)
 model.eval()
 
 print("모델 로드 완료!")
+
+# 평가 함수
+def evaluate(model, loader):
+    all_preds = []
+    all_labels = []
+
+    with torch.no_grad():
+        for images, labels in loader:
+            images, labels = images.to(device), labels.to(device)
+            outputs = model(images)
+            _, predicted = outputs.max(1)
+
+            all_preds.extend(predicted.cpu().numpy())
+            all_labels.extend(labels.cpu().numpy())
+
+    return np.array(all_preds), np.array(all_labels)
+
+
+# 메인 실행
+if __name__ == "__main__":
+    print("\n평가 시작!")
+    print("-" * 50)
+
+    preds, labels = evaluate(model, val_loader)
+
+    # 전체 정확도
+    acc = (preds == labels).mean() * 100
+    print(f"\n전체 정확도: {acc:.2f}%")
+
+    # 클래스별 정확도
+    print("\n클래스별 성능:")
+    print(classification_report(labels, preds, target_names=class_names))
+
+    # 혼동 행렬
+    cm = confusion_matrix(labels, preds)
+    print("혼동 행렬:")
+    print(cm)
