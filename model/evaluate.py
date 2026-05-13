@@ -34,3 +34,12 @@ val_loader = DataLoader(val_dataset, batch_size=BATCH_SIZE, shuffle=False)
 class_names = val_dataset.classes
 print(f"클래스 목록: {class_names}")
 print(f"검증 데이터: {len(val_dataset)}장")
+
+# 모델 로드
+model = models.efficientnet_b0(weights=None)
+model.classifier[1] = nn.Linear(model.classifier[1].in_features, NUM_CLASSES)
+model.load_state_dict(torch.load(MODEL_PATH, map_location=device))
+model = model.to(device)
+model.eval()
+
+print("모델 로드 완료!")
