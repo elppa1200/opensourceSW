@@ -7,8 +7,9 @@ from sklearn.metrics import classification_report, confusion_matrix
 import numpy as np
 
 # 경로 설정
-VAL_DIR = r"D:\waste_dataset\processed\val"
-MODEL_PATH = r"D:\waste_dataset\model\efficientnet_b0.pth"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+VAL_DIR = os.path.join(BASE_DIR, "..", "data", "processed", "val")
+MODEL_PATH = os.path.join(BASE_DIR, "efficientnet_b0.pth")
 
 # 설정
 BATCH_SIZE = 32

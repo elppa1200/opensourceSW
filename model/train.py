@@ -5,9 +5,10 @@ from torch.utils.data import DataLoader
 from torchvision import datasets, transforms, models
 
 # 경로 설정
-TRAIN_DIR = r"D:\waste_dataset\processed\train"
-VAL_DIR = r"D:\waste_dataset\processed\val"
-MODEL_SAVE_PATH = r"D:\waste_dataset\model\efficientnet_b0.pth"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TRAIN_DIR = os.path.join(BASE_DIR, "..", "data", "processed", "train")
+VAL_DIR = os.path.join(BASE_DIR, "..", "data", "processed", "val")
+MODEL_SAVE_PATH = os.path.join(BASE_DIR, "efficientnet_b0.pth")
 
 # 하이퍼파라미터
 BATCH_SIZE = 32
