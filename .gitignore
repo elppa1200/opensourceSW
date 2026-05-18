@@ -1,0 +1,17 @@
+# 모델 파일
+*.pth
+*.pt
+*.h5
+
+# 데이터셋
+*.jpg
+*.jpeg
+*.png
+
+# 파이썬
+__pycache__/
+*.pyc
+.env
+
+# 기타
+.DS_Store
