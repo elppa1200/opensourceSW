@@ -1,3 +1,4 @@
+
 # 모델 파일
 *.pth
 *.pt
@@ -15,3 +16,11 @@ __pycache__/
 
 # 기타
 .DS_Store
+=======
+# Created by https://www.toptal.com/developers/gitignore/api/windows,visualstudiocode,python
+# Edit at https://www.toptal.com/developers/gitignore?templates=windows,visualstudiocode,python
+
+# 가상 환경 폴더 제외
+.venv/
+venv/
+testHello
