@@ -4,18 +4,19 @@ import torch.nn as nn
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms, models
 
-# 경로 설정
-TRAIN_DIR = r"D:\waste_dataset\processed\train"
-VAL_DIR = r"D:\waste_dataset\processed\val"
-MODEL_SAVE_PATH = r"D:\waste_dataset\model\efficientnet_b0.pth"
+# 경로 설정(상대 경로)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+TRAIN_DIR = os.path.join(BASE_DIR, "..", "data", "processed", "train")
+VAL_DIR = os.path.join(BASE_DIR, "..", "data", "processed", "val")
+MODEL_SAVE_PATH = os.path.join(BASE_DIR, "efficientnet_b0.pth")
 
-# 하이퍼파라미터
-BATCH_SIZE = 32
-EPOCHS = 10
-LEARNING_RATE = 0.001
-NUM_CLASSES = 4
+# 하이퍼파라미터 설정
+BATCH_SIZE = 32       # 한 번에 처리할 이미지 수
+EPOCHS = 10           # 전체 데이터 학습 반복 횟수
+LEARNING_RATE = 0.001 # 학습률
+NUM_CLASSES = 4       # 분류 클래스 수 (glass, metal, paper, plastic)
 
-# GPU 설정
+# GPU 사용 가능 여부 확인 (없으면 CPU 사용)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"사용 디바이스: {device}")
 
