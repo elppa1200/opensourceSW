@@ -3,6 +3,8 @@ from PIL import Image
 from streamlit_image_select import image_select
 from io import BytesIO
 
+from recycling_guide import render_recycling_guide
+
 # PIL(Python Imaging Library)은 이미지 처리 라이브러리입니다. 
 # 이미지를 열고, 변환하고, 조작하는 기능을 제공합니다. --> image.open, .convert, .resize 등
 
@@ -102,7 +104,11 @@ if upload_button and uploaded_files:
             "name": file.name,
             "type": file.type,
             "size": file.size,
-            "bytes": file.getvalue()
+            "bytes": file.getvalue(),
+            # 학습 모델이 분류한 클래스와 confidence를 저장하기 위한 key,value쌍이다.
+            # 기본값으로 None이 저장된다. 이후에 학습모델로 인해 갱신된다.
+            "predicted_class" : None,
+            "confidence" : None
         })
 
     # 이미지 리스트는 큐 구조로 저장한다.
@@ -217,6 +223,31 @@ if st.session_state.images:
             preview_image,
             caption=selected_image_data["name"]
         )
+        #=================================================
+        #여기서 부분에 AI 모델을 호출하여 분류한뒤 결과물을 아래와 같이 저장해주면 됩니다.
+        #selected_image_data["predicted_class"] = "Paper"
+        #selected_image_data["confidence"] = 0.98
+
+
+        # -------------------------------------------------------
+        # AI 모델 예측 결과에 따른 분리수거 안내문 출력 부분
+        # -------------------------------------------------------
+        
+
+        #현재 선택된 이미지에서 에측 클래스와 신뢰도를 가져온다.
+        predicted_class = selected_image_data.get("predicted_class")
+        confidence = selected_image_data.get("confidence")
+
+        # 아직 모델 통합 전에도 화면 확인이 가능하도록 임시 선택 UI 제공
+        if predicted_class is None:
+            predicted_class = st.selectbox(
+                "모델 통합 전 테스트용 분류 결과 선택",
+                options=["paper", "glass", "metal", "plastic"],
+                index=0,
+                key=f"mock_class_{st.session_state.selected_index}",
+            )
+
+        render_recycling_guide(predicted_class, confidence)
 
 else:
     st.info("아직 업로드된 이미지가 없습니다.")
