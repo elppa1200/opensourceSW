@@ -257,7 +257,7 @@ if st.session_state.images:
                         st.progress(prob / 100, text=f"{prob:.2f}%")
                 
                 selected_image_data["predicted_class"] = top_class
-                probfloat = max(probs_array);
+                probfloat = max(probs_array) / 100.0;
                 selected_image_data["confidence"] = probfloat
 
 
