@@ -6,10 +6,7 @@ from io import BytesIO
 # ---------------------------- commit - 20260513 - raymoon8899 start (1)
 #필요 모듈 임포트
 import os
-import torch
-import torch.nn as nn
-from torchvision import models, transforms
-from model_utils import load_trained_model, predict
+from model_utils import load_trained_model, predict, classes
 
 # ----------------------------- commit - 20260513 - raymoon8899 end (1)
 
@@ -137,6 +134,8 @@ if upload_button and uploaded_files:
     st.rerun()
 
 
+
+
 # -----------------------------
 # 선택된 이미지 표시
 # -----------------------------
@@ -225,7 +224,7 @@ if st.session_state.images:
 
     with col2:
         # 리사이즈 된 미리보기 이미지를 캡션 달아서 중앙에 출력한다.
-        st.image( preview_image, caption=selected_image_data["name"] )
+        st.image(preview_image, caption=selected_image_data["name"])
 
 
         #------------------------------- commit - 20260514 - raymoon8899 start (1)
@@ -239,17 +238,31 @@ if st.session_state.images:
         try:
             model, device = load_trained_model(MODEL_PATH)
             
-            if st.button("이 쓰레기는 무엇일까요?", use_container_width=True):
-                with st.spinner('분류 중...'):
-                    # 원본 이미지(selected_image)를 사용하여 예측
-                    label, conf = predict(selected_image, model, device)
-                
-                # 결과 출력
-                st.success(f"이 쓰레기는 **{label}**(으)로 분류됩니다!")
-                st.metric(label=f"분류 결과: {label}", value=f"{conf:.2f}% 확신")
+            if st.button(" 이 쓰레기는 무엇일까요?", use_container_width=True):
+            # top_class: 1위 클래스 이름, probs_array: ['glass', 'metal', 'paper', 'plastic'] 순서의 확률 배열
+                top_class, probs_array = predict(selected_image, model, device)
+            
+                st.success(f"이 쓰레기는 **{top_class}**(으)로 분류됩니다!")
+            
+                st.write("- **클래스별 확률**")
+            
+                # classes 배열과 probs_array 배열을 순서대로 묶어서 반복
+                for class_name, prob in zip(classes, probs_array):
+                    col1, col2 = st.columns([1, 4])
+                    with col1:
+                        st.write(f"**{class_name}**")
+                    with col2:
+                        st.progress(prob / 100, text=f"{prob:.2f}%")
                 
         except Exception as e:
             st.error(f"모델을 불러오거나 예측하는 중에 오류가 발생했습니다: {e}")
+
+        #여기서 부분에 AI 모델을 호출하여 분류한뒤 결과물을 아래와 같이 저장해주면 됩니다.
+       
+         #selected_image_data["predicted_class"] = "Paper"
+        #selected_image_data["confidence"] = 0.98
+        
+        
 
         #------------------------------- commit - 20260514 - raymoon8899 end (2)
 
