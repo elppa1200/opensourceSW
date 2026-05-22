@@ -8,6 +8,8 @@ from io import BytesIO
 import os
 from model_utils import load_trained_model, predict, classes
 
+from recycling_guide import render_recycling_guide
+
 # ----------------------------- commit - 20260513 - raymoon8899 end (1)
 
 
@@ -254,13 +256,30 @@ if st.session_state.images:
                     with col2:
                         st.progress(prob / 100, text=f"{prob:.2f}%")
                 
+                selected_image_data["predicted_class"] = top_class
+                probfloat = max(probs_array);
+                selected_image_data["confidence"] = probfloat
+
+
+                
         except Exception as e:
             st.error(f"모델을 불러오거나 예측하는 중에 오류가 발생했습니다: {e}")
+        
+        predicted_class = selected_image_data.get("predicted_class")
+        confidence = selected_image_data.get("confidence")
 
+        if predicted_class is None:
+            predicted_class = st.selectbox(
+                "모델 통합 전 테스트용 분류 결과 선택",
+                options=["paper", "glass", "metal", "plastic"],
+                index=0,
+                key=f"mock_class_{st.session_state.selected_index}",
+            )
+
+        render_recycling_guide(predicted_class, confidence)
         #여기서 부분에 AI 모델을 호출하여 분류한뒤 결과물을 아래와 같이 저장해주면 됩니다.
        
-         #selected_image_data["predicted_class"] = "Paper"
-        #selected_image_data["confidence"] = 0.98
+        
         
         
 
