@@ -235,7 +235,7 @@ if st.session_state.images:
         
         # 모델 로드 (저장된 경로 입력)
         BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-        MODEL_PATH = os.path.join(BASE_DIR, "model", "efficientnet_b0.pth")
+        MODEL_PATH = os.path.join(BASE_DIR, "model", "efficientnet_b0_v2.pth")
         
         try:
             model, device = load_trained_model(MODEL_PATH)
