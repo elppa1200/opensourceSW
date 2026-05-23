@@ -20,11 +20,15 @@ NUM_CLASSES = 4       # 분류 클래스 수 (glass, metal, paper, plastic)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"사용 디바이스: {device}")
 
-# 데이터 전처리 설정
+# 데이터 전처리 설정(강화버전)
 train_transform = transforms.Compose([
-    transforms.Resize((224, 224)),
+    transforms.Resize((256, 256)),
+    transforms.RandomCrop(224),
     transforms.RandomHorizontalFlip(),
-    transforms.RandomRotation(10),
+    transforms.RandomVerticalFlip(),
+    transforms.ColorJitter(brightness=0.3, contrast=0.3, saturation=0.3),
+    transforms.RandomGrayscale(p=0.1),
+    transforms.RandomPerspective(distortion_scale=0.3, p=0.3),
     transforms.ToTensor(),
     transforms.Normalize([0.485, 0.456, 0.406],
                          [0.229, 0.224, 0.225])
