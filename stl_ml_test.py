@@ -228,8 +228,6 @@ if st.session_state.images:
         # 리사이즈 된 미리보기 이미지를 캡션 달아서 중앙에 출력한다.
         st.image(preview_image, caption=selected_image_data["name"])
 
-
-        #------------------------------- commit - 20260514 - raymoon8899 start (1)
         #모델 로드 후 적용 시행
         st.divider()
         
@@ -240,28 +238,20 @@ if st.session_state.images:
         try:
             model, device = load_trained_model(MODEL_PATH)
             
-            if st.button(" 이 쓰레기는 무엇일까요?", use_container_width=True):
             # top_class: 1위 클래스 이름, probs_array: ['glass', 'metal', 'paper', 'plastic'] 순서의 확률 배열
-                top_class, probs_array = predict(selected_image, model, device)
-            
-                st.success(f"이 쓰레기는 **{top_class}**(으)로 분류됩니다!")
-            
-                st.write("- **클래스별 확률**")
-            
-                # classes 배열과 probs_array 배열을 순서대로 묶어서 반복
-                for class_name, prob in zip(classes, probs_array):
-                    col1, col2 = st.columns([1, 4])
-                    with col1:
-                        st.write(f"**{class_name}**")
-                    with col2:
-                        st.progress(prob / 100, text=f"{prob:.2f}%")
+            top_class, probs_array = predict(selected_image, model, device)
                 
-                selected_image_data["predicted_class"] = top_class
-                probfloat = max(probs_array) / 100.0;
-                selected_image_data["confidence"] = probfloat
-
-
+            ###st.success(f"이 쓰레기는 **{top_class}**(으)로 분류됩니다!")
+            
+            # classes 배열과 probs_array 배열을 순서대로 묶어서 반복
+            for class_name, prob in zip(classes, probs_array):
+                col1, col2 = st.columns([1, 4])
+                print(class_name, ': ', prob, '%')
                 
+            selected_image_data["predicted_class"] = top_class
+            probfloat = max(probs_array) / 100.0;
+            selected_image_data["confidence"] = probfloat
+
         except Exception as e:
             st.error(f"모델을 불러오거나 예측하는 중에 오류가 발생했습니다: {e}")
         
@@ -277,13 +267,6 @@ if st.session_state.images:
             )
 
         render_recycling_guide(predicted_class, confidence)
-        #여기서 부분에 AI 모델을 호출하여 분류한뒤 결과물을 아래와 같이 저장해주면 됩니다.
-       
-        
-        
-        
-
-        #------------------------------- commit - 20260514 - raymoon8899 end (2)
 
 
 else:
