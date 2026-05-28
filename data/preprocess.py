@@ -206,4 +206,4 @@ def build_app_boost():
 if __name__ == "__main__":
     build_training()    # build_dataset -> build_training 으로 함수명 변경
     build_validation()
-    build_app_boost()   # 어플리케이션 데이터 보강 함수 추가    
+    build_app_boost()   # 종이/유리 보강
