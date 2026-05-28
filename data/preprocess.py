@@ -147,6 +147,63 @@ def build_validation():
 
     print("\nValidation 전처리 완료!")
 
+def build_app_boost():
+    """어플리케이션 데이터에서 종이/유리만 추가 수집하는 함수
+    - 실내형분류기 데이터의 종이/유리 부족분 보강
+    - processed/train 폴더에 추가 복사
+    """
+    class_images = defaultdict(list)
+
+    print("어플리케이션 라벨 파일 읽는 중...")
+    for json_file in os.listdir(APP_LABEL_DIR):
+        if not json_file.endswith(".json"):
+            continue
+
+        json_path = os.path.join(APP_LABEL_DIR, json_file)
+        with open(json_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        image_name = data.get("Image", "")
+        objects = data.get("objects", [])
+
+        if not objects:
+            continue
+
+        class_name = objects[0].get("class_name", "")
+        category = LABEL_MAP.get(class_name)
+
+        # 종이/유리만 수집
+        if category not in BOOST_CATEGORIES:
+            continue
+
+        # C_1~C_5 폴더에서 이미지 찾기
+        for c_folder in ["TS_어플리케이션_C_1", "TS_어플리케이션_C_2",
+                         "TS_어플리케이션_C_3", "TS_어플리케이션_C_4",
+                         "TS_어플리케이션_C_5"]:
+            image_path = os.path.join(APP_IMG_DIR, c_folder, image_name)
+            if os.path.exists(image_path):
+                class_images[category].append(image_path)
+                break
+
+    print("\n어플리케이션 데이터 카테고리별 이미지 수:")
+    for cat, imgs in class_images.items():
+        print(f"  {cat}: {len(imgs)}장")
+
+    print("\n어플리케이션 데이터 복사 중...")
+    for category, images in class_images.items():
+        out_dir = os.path.join(OUTPUT_DIR, "train", category)
+        os.makedirs(out_dir, exist_ok=True)
+
+        # 최대 10,000장 추가 (기존 데이터 포함 총 20,000장)
+        sampled = random.sample(images, min(10000, len(images)))
+        for img_path in sampled:
+            shutil.copy(img_path, out_dir)
+
+        print(f"  {category}: {len(sampled)}장 추가 완료")
+
+    print("\n어플리케이션 데이터 보강 완료!")
+
 if __name__ == "__main__":
     build_training()    # build_dataset -> build_training 으로 함수명 변경
     build_validation()
+    build_app_boost()   # 어플리케이션 데이터 보강 함수 추가    
