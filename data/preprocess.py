@@ -9,6 +9,13 @@ TRAIN_IMG_DIR = r"D:\waste_dataset\Training\images_extracted"
 TRAIN_LABEL_DIR = r"D:\waste_dataset\Training\labels_extracted"
 OUTPUT_DIR = r"D:\waste_dataset\processed"
 
+# 어플리케이션 데이터 경로 (종이/유리 보강용)
+APP_IMG_DIR = r"D:\waste_dataset\TS_application_C\307.생활폐기물 데이터 활용ㆍ환류\01-1.정식개방데이터\Training\01.원천데이터"
+APP_LABEL_DIR = r"D:\waste_dataset\TL_application_C\307.생활폐기물 데이터 활용ㆍ환류\01-1.정식개방데이터\Training\02.라벨링데이터"
+
+# 보강할 카테고리 (종이/유리만)
+BOOST_CATEGORIES = ["paper", "glass"]
+
 # Validation 경로 추가
 VAL_IMG_DIR = r"D:\waste_dataset\Validation\images_extracted"
 VAL_LABEL_DIR = r"D:\waste_dataset\Validation\labels_extracted"
