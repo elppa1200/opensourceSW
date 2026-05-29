@@ -176,14 +176,14 @@ def build_app_boost():
             if category not in BOOST_CATEGORIES:
                 continue
 
-        # C_1~C_5 폴더에서 이미지 찾기
-        for c_folder in ["TS_어플리케이션_C_1", "TS_어플리케이션_C_2",
-                         "TS_어플리케이션_C_3", "TS_어플리케이션_C_4",
-                         "TS_어플리케이션_C_5"]:
-            image_path = os.path.join(APP_IMG_DIR, c_folder, image_name)
-            if os.path.exists(image_path):
-                class_images[category].append(image_path)
-                break
+            # C_1~C_5 폴더에서 이미지 찾기
+            for c_folder in ["TS_어플리케이션_C_1", "TS_어플리케이션_C_2",
+                            "TS_어플리케이션_C_3", "TS_어플리케이션_C_4",
+                            "TS_어플리케이션_C_5"]:
+                image_path = os.path.join(APP_IMG_DIR, c_folder, image_name)
+                if os.path.exists(image_path):
+                    class_images[category].append(image_path)
+                    break
 
     print("\n어플리케이션 데이터 카테고리별 이미지 수:")
     for cat, imgs in class_images.items():
