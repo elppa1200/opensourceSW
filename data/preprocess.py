@@ -160,21 +160,21 @@ def build_app_boost():
             if not json_file.endswith(".json"):
                 continue
             json_path = os.path.join(root, json_file)
-        with open(json_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
+            with open(json_path, "r", encoding="utf-8") as f:
+                data = json.load(f)
 
-        image_name = data.get("Image", "")
-        objects = data.get("objects", [])
+            image_name = data.get("Image", "")
+            objects = data.get("objects", [])
 
-        if not objects:
-            continue
+            if not objects:
+                continue
 
-        class_name = objects[0].get("class_name", "")
-        category = LABEL_MAP.get(class_name)
+            class_name = objects[0].get("class_name", "")
+            category = LABEL_MAP.get(class_name)
 
-        # 종이/유리만 수집
-        if category not in BOOST_CATEGORIES:
-            continue
+            # 종이/유리만 수집
+            if category not in BOOST_CATEGORIES:
+                continue
 
         # C_1~C_5 폴더에서 이미지 찾기
         for c_folder in ["TS_어플리케이션_C_1", "TS_어플리케이션_C_2",
