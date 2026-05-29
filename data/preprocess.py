@@ -155,11 +155,11 @@ def build_app_boost():
     class_images = defaultdict(list)
 
     print("어플리케이션 라벨 파일 읽는 중...")
-    for json_file in os.listdir(APP_LABEL_DIR):
-        if not json_file.endswith(".json"):
-            continue
-
-        json_path = os.path.join(APP_LABEL_DIR, json_file)
+    for root, dirs, files in os.walk(APP_LABEL_DIR):
+        for json_file in files:
+            if not json_file.endswith(".json"):
+                continue
+            json_path = os.path.join(root, json_file)
         with open(json_path, "r", encoding="utf-8") as f:
             data = json.load(f)
 
