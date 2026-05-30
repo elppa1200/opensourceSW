@@ -13,9 +13,11 @@ OUTPUT_DIR = r"D:\waste_dataset\processed"
 VAL_IMG_DIR = r"D:\waste_dataset\Validation\images_extracted"
 VAL_LABEL_DIR = r"D:\waste_dataset\Validation\labels_extracted"
 
+# 클래스별 샘플링 수 (클래스 불균형 방지)
 SAMPLES_PER_CLASS = 10000
 
-# 4개 카테고리 매핑
+# AI Hub 라벨 -> 4개 카테고리 매핑
+# 이물질 포함 라벨도 같은 카테고리로 통합
 LABEL_MAP = {
     # 종이
     "c_1": "paper", "c_1_01": "paper",
@@ -33,7 +35,11 @@ LABEL_MAP = {
 }
 
 def build_training(): # build_dataset -> build_training 으로 함수명 변경
-    # 카테고리별 이미지 목록 수집
+    """ 학습 데이터 전처리 함수
+    - JSON 라벨 파일 읽어서 이미지-카테고리 매핑
+    - 클래스별로 최대 10,000장 샘플링
+    - processed/train 폴더에 복사
+    """
     class_images = defaultdict(list)
 
     print("라벨 파일 읽는 중...")
@@ -51,7 +57,7 @@ def build_training(): # build_dataset -> build_training 으로 함수명 변경
         if not objects:
             continue
 
-        # 첫 번째 object의 class_name 사용
+        # 첫 번째 객체의 클래스명으로 카테고리 결정
         class_name = objects[0].get("class_name", "")
 
         # 4개 카테고리로 매핑
@@ -68,8 +74,30 @@ def build_training(): # build_dataset -> build_training 으로 함수명 변경
     for cat, imgs in class_images.items():
         print(f"  {cat}: {len(imgs)}장")
 
-# Validaiton 처리 함수 추가
+    # 클래스별 10,000장 샘플링 후 복사
+    print(f"\n클래스별 {SAMPLES_PER_CLASS}장 샘플링 및 복사 중...")
+    for category, images in class_images.items():
+        out_dir = os.path.join(OUTPUT_DIR, "train", category)
+        os.makedirs(out_dir, exist_ok=True)
+
+        # 최대 10,000장 랜덤 샘플링
+        sampled = random.sample(images, min(SAMPLES_PER_CLASS, len(images)))
+        for img_path in sampled:
+            shutil.copy(img_path, out_dir)
+
+        print(f"  {category}: {len(sampled)}장 복사 완료")
+
+    print("\n전처리 완료!")
+    print(f"저장 위치: {OUTPUT_DIR}")
+
+
+# Validation 처리 함수 추가
 def build_validation():
+    """ 검증 데이터 전처리 함수
+    - JSON 라벨 파일 읽어서 이미지-카테고리 매핑
+    - 전체 검증 데이터 복사 (샘플링 없음)
+    - processed/val 폴더에 복사
+    """
     class_images = defaultdict(list)
 
     print("Validation 라벨 파일 읽는 중...")
@@ -111,21 +139,6 @@ def build_validation():
         print(f"  {category}: {len(images)}장 복사 완료")
 
     print("\nValidation 전처리 완료!")
-
-# 클래스별 10,000장 샘플링 후 복사
-    print(f"\n클래스별 {SAMPLES_PER_CLASS}장 샘플링 및 복사 중...")
-    for category, images in class_images.items():
-        out_dir = os.path.join(OUTPUT_DIR, "train", category)
-        os.makedirs(out_dir, exist_ok=True)
-
-        sampled = random.sample(images, min(SAMPLES_PER_CLASS, len(images)))
-        for img_path in sampled:
-            shutil.copy(img_path, out_dir)
-
-        print(f"  {category}: {len(sampled)}장 복사 완료")
-
-    print("\n전처리 완료!")
-    print(f"저장 위치: {OUTPUT_DIR}")
 
 if __name__ == "__main__":
     build_training()    # build_dataset -> build_training 으로 함수명 변경

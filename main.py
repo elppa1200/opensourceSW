@@ -112,7 +112,11 @@ if upload_button and uploaded_files:
             "name": file.name,
             "type": file.type,
             "size": file.size,
-            "bytes": file.getvalue()
+            "bytes": file.getvalue(),
+            # 학습 모델이 분류한 클래스와 confidence를 저장하기 위한 key,value쌍이다.
+            # 기본값으로 None이 저장된다. 이후에 학습모델로 인해 갱신된다.
+            "predicted_class" : None,
+            "confidence" : None
         })
 
     # 이미지 리스트는 큐 구조로 저장한다.
