@@ -3,6 +3,16 @@ from PIL import Image
 from streamlit_image_select import image_select
 from io import BytesIO
 
+# ---------------------------- commit - 20260513 - raymoon8899 start (1)
+#필요 모듈 임포트
+import os
+from model_utils import load_trained_model, predict, classes
+
+from recycling_guide import render_recycling_guide
+
+# ----------------------------- commit - 20260513 - raymoon8899 end (1)
+
+
 # PIL(Python Imaging Library)은 이미지 처리 라이브러리입니다. 
 # 이미지를 열고, 변환하고, 조작하는 기능을 제공합니다. --> image.open, .convert, .resize 등
 
@@ -126,6 +136,8 @@ if upload_button and uploaded_files:
     st.rerun()
 
 
+
+
 # -----------------------------
 # 선택된 이미지 표시
 # -----------------------------
@@ -206,6 +218,7 @@ if st.session_state.images:
     selected_image = load_image(selected_image_data)
     preview_image = make_resized_preview(selected_image, max_width=PREVIEW_WIDTH)
 
+
     st.subheader("선택된 이미지 미리보기")
     # st.columns은 페이지를 여러 개의 열로 나누는 Streamlit 함수입니다.
     # 아래는 3개의 열을 이용하여 좌, 중, 우를[1, 3, 1]이라는 비율로 만들고 있습니다.
@@ -213,10 +226,49 @@ if st.session_state.images:
 
     with col2:
         # 리사이즈 된 미리보기 이미지를 캡션 달아서 중앙에 출력한다.
-        st.image(
-            preview_image,
-            caption=selected_image_data["name"]
-        )
+        st.image(preview_image, caption=selected_image_data["name"])
+
+        #모델 로드 후 적용 시행
+        st.divider()
+        
+        # 모델 로드 (저장된 경로 입력)
+        BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+        MODEL_PATH = os.path.join(BASE_DIR, "model", "efficientnet_b0_v2.pth")
+        
+        try:
+            model, device = load_trained_model(MODEL_PATH)
+            
+            # top_class: 1위 클래스 이름, probs_array: ['glass', 'metal', 'paper', 'plastic'] 순서의 확률 배열
+            top_class, probs_array = predict(selected_image, model, device)
+                
+            ###st.success(f"이 쓰레기는 **{top_class}**(으)로 분류됩니다!")
+            
+            # classes 배열과 probs_array 배열을 순서대로 묶어서 반복
+            for class_name, prob in zip(classes, probs_array):
+                col1, col2 = st.columns([1, 4])
+                print(class_name, ': ', prob, '%')
+
+            print('')
+            selected_image_data["predicted_class"] = top_class
+            probfloat = max(probs_array) / 100.0;
+            selected_image_data["confidence"] = probfloat
+
+        except Exception as e:
+            st.error(f"모델을 불러오거나 예측하는 중에 오류가 발생했습니다: {e}")
+        
+        predicted_class = selected_image_data.get("predicted_class")
+        confidence = selected_image_data.get("confidence")
+
+        if predicted_class is None:
+            predicted_class = st.selectbox(
+                "모델 통합 전 테스트용 분류 결과 선택",
+                options=["paper", "glass", "metal", "plastic"],
+                index=0,
+                key=f"mock_class_{st.session_state.selected_index}",
+            )
+
+        render_recycling_guide(predicted_class, confidence)
+
 
 else:
     st.info("아직 업로드된 이미지가 없습니다.")
