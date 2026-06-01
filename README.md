@@ -1,8 +1,10 @@
-# Recycling Image Classifier Streamlit App (오픈소스SW개론 11조)
+# Recycling Image Classifier Streamlit App 
+
+(오픈소스SW개론 11조)
 
 ## 1. 프로젝트 개요
 
-이 프로젝트는 사용자가 업로드한 이미지 파일을 Streamlit 웹 화면에서 확인하고, 별도의 테스트 파일에서는 학습된 이미지 분류 모델을 이용해 재활용 품목을 예측하는 애플리케이션입니다.
+이 프로젝트는 사용자가 업로드한 이미지 파일을 Streamlit 웹 화면에서 확인하고, 학습된 이미지 분류 모델을 이용해 재활용 품목을 예측하는 애플리케이션입니다.
 
 - `main.py`: 이미지 업로드, 업로드 목록 표시, 이미지 선택, 학습된 모델을 불러와 이미지 분류를 수행하고 분리수거 안내를 출력하는 테스트용 Streamlit 앱입니다
 - `model_utils.py`: PyTorch와 torchvision을 이용해 EfficientNet-B0 모델을 로드하고 예측을 수행하는 함수가 들어 있습니다.
@@ -10,6 +12,7 @@
 - `model/efficientnet_b0_v2.pth`: `main.py`에서 사용하는 학습된 모델 가중치 파일입니다.
 
 AI Hub의 데이터로 제작되었습니다.
+
 [https://aihub.or.kr/aihubdata/data/view.do?currMenu=115&amp;topMenu=100&amp;dataSetSn=71385](https://aihub.or.kr/aihubdata/data/view.do?currMenu=115&topMenu=100&dataSetSn=71385)
 
 ## 2. 코드의 용도
@@ -115,7 +118,6 @@ opensourceSW/
 
 기능:
 
-- 페이지 설정
 - 이미지 업로드
 - 업로드 이미지 목록 관리
 - 사이드바 이미지 선택
